@@ -165,6 +165,7 @@ def _local_annotate(
     max_retries: int = 3,
     llm_sampling_kwargs: Optional[dict] = {},
     tokenizer_kwargs: Optional[dict] = {},
+    engine_kwargs: Optional[dict] = None,
 ) -> None:
     """Annotate (text, concept) tasks with a local HF model, using a single
     call to `get_local_completions`.
@@ -194,6 +195,7 @@ def _local_annotate(
             max_tokens=max_tokens,
             llm_sampling_kwargs=llm_sampling_kwargs,
             tokenizer_kwargs=tokenizer_kwargs,
+            engine_kwargs=engine_kwargs,
         )
 
         # Parse completions, update results & cache, track failed tasks

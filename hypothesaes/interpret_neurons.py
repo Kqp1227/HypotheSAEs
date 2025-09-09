@@ -162,6 +162,7 @@ class LLMConfig:
     max_interpretation_tokens: int = 100 # Maximum number of tokens for each generated interpretation
     timeout: float = 10.0 # Timeout for the interpreter model (in seconds)
     tokenizer_kwargs: Dict[str, Any] = field(default_factory=lambda: {"enable_thinking": True}) # tokenizer_kwargs are not used for API models
+    engine_kwargs: Dict[str, Any] = field(default_factory=dict) # Extra kwargs for vLLM engine (e.g., gpu_memory_utilization, dtype, quantization)
 
 @dataclass
 class InterpretConfig:
@@ -308,6 +309,7 @@ class NeuronInterpreter:
                 tokenizer_kwargs=config.llm.tokenizer_kwargs,
                 max_tokens=config.llm.max_interpretation_tokens,
                 llm_sampling_kwargs=llm_sampling_kwargs,
+                engine_kwargs=config.llm.engine_kwargs,
             )
             return [self._parse_interpretation(r) for r in raw_responses]
 

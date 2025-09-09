@@ -59,7 +59,13 @@ def get_vllm_engine(model: str, **kwargs) -> LLM:
         print(f"Loading {model} in vLLM...")
         t0 = time.time()
         gpu_memory_utilization = kwargs.pop("gpu_memory_utilization", 0.85)
-        engine = LLM(model=model, task="generate", enable_sleep_mode=True, gpu_memory_utilization=gpu_memory_utilization, **kwargs)
+        engine = LLM(
+            model=model,
+            task="generate",
+            enable_sleep_mode=True,
+            gpu_memory_utilization=gpu_memory_utilization,
+            **kwargs,
+        )
         _LOCAL_ENGINES[model] = engine
         dtype = getattr(engine.llm_engine.get_model_config(), "dtype", "unknown")
         print(f"Loaded {model} with dtype: {dtype} (took {time.time()-t0:.1f}s)")
@@ -80,9 +86,10 @@ def get_local_completions(
     show_progress: bool = True,
     tokenizer_kwargs: Optional[dict] = {},
     llm_sampling_kwargs: Optional[dict] = {},
+    engine_kwargs: Optional[dict] = None,
 ) -> List[str]:
     """Generate completions using vLLM with llm.generate()."""
-    engine = get_vllm_engine(model)
+    engine = get_vllm_engine(model, **(engine_kwargs or {}))
     tokenizer = engine.get_tokenizer()
 
     if getattr(tokenizer, "chat_template", None) is not None:

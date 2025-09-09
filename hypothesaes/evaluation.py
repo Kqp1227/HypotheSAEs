@@ -139,8 +139,10 @@ def compute_ols_metrics(
     
     if classification:
         model = sm.Logit(y_true, X)
+        fell_back_to_ols = False
     else:
         model = sm.OLS(y_true, X)
+        fell_back_to_ols = False
     
     try:
         results = model.fit()
@@ -148,6 +150,7 @@ def compute_ols_metrics(
         print(f"Error fitting model: {e}, trying OLS instead")
         model = sm.OLS(y_true, X)
         results = model.fit()
+        fell_back_to_ols = True
     
     if print_summary:
         print(results.summary())
@@ -156,7 +159,7 @@ def compute_ols_metrics(
     metrics = {}
     y_pred = results.predict(X)
     
-    if classification:
+    if classification and not fell_back_to_ols:
         metrics.update({
             'auroc': roc_auc_score(y_true, y_pred),
             'auprc': average_precision_score(y_true, y_pred),
@@ -164,6 +167,7 @@ def compute_ols_metrics(
         if hasattr(results, 'prsquared'):
             metrics['r2'] = results.prsquared
     else:
+        # For regression or when we fell back to OLS for classification
         r, _ = pearsonr(y_true, y_pred)
         metrics['r2'] = r**2
     

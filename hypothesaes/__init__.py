@@ -35,6 +35,8 @@ from .annotate import annotate_texts_with_concepts
 
 from .utils import get_text_for_printing
 
+from .multi_annotator_evaluation import MultiAnnotatorEvaluator
+
 # Define what gets imported with "from hypothesaes import *"
 __all__ = [
     # Main workflow functions
@@ -65,5 +67,8 @@ __all__ = [
     "annotate_texts_with_concepts",
     
     # Utilities
-    "get_text_for_printing"
+    "get_text_for_printing",
+    
+    # Multi-annotator evaluation
+    "MultiAnnotatorEvaluator"
 ]
